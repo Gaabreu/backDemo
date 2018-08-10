@@ -1,8 +1,19 @@
 let campoNome = document.querySelector('#nome');
 let campoEmail = document.querySelector('#email');
-let compoSenha = document.querySelectro('#senha');
+let campoSenha = document.querySelector('#senha');
 let botao = document.querySelector('button');
 let lista = document.querySelector('ul');
+
+function apagarItem(){
+    let texto = this.previousElementSibling.innerHTML;
+    let nome = texto.split("-")[0];
+
+    fetch(`http://localhost:3000/email/${nome.trim()}`, {
+        method: 'DELETE'
+    }).then(() => {
+        carregar();
+    })
+}
 
 function montarTela(cadastro){
     let entrada = document.createElement('li');
@@ -16,30 +27,6 @@ function montarTela(cadastro){
     entrada.appendChild(botao);
     lista.appendChild(entrada);
 }
-
-botao.addEventListener('click', () => {
-    let cadastro = {
-        nome: campoNome.value,
-        email: campoEmail.value,
-        senha: campoSenha.value
-    }
-    
-    campoNome.value = '';
-    campoEmail.value = '';
-    campoSenha.value = '';
-    
-    fetch(`http://localhost:3000/cadastros/${cadastro.nome}`).then(resposta => {
-        return resposta.json();
-    }).then(dados => {
-        if(dados.nome){
-            alterarCadastro(cadastro, true);
-        }
-        else{
-            alterarCadastro(cadastro);
-        }
-    });
-
-});
 
 function alterarCadastro(cadastro, atualizar=false){
     let endpoint;
@@ -60,9 +47,32 @@ function alterarCadastro(cadastro, atualizar=false){
     });
 }
 
+botao.addEventListener('click', () => {
+    let cadastro = {
+        nome: campoNome.value,
+        email: campoEmail.value,
+        senha: campoSenha.value
+    }
+    
+    campoNome.value = '';
+    campoEmail.value = '';
+    campoSenha.value = '';
+    
+    fetch(`http://localhost:3000/email/${cadastro.nome}`).then(resposta => {
+        return resposta.json();
+    }).then(dados => {
+        if(dados.nome){
+            alterarCadastro(cadastro, true);
+        }
+        else{
+            alterarCadastro(cadastro);
+        }
+    });
+
+});
 
 function carregar(){
-    fetch('http://localhost:3000/cadastros').then(resposta => {
+    fetch('http://localhost:3000/emails').then(resposta => {
     return resposta.json();
 }).then(cadastros => {
     lista.innerHTML = '';
