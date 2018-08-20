@@ -16,6 +16,13 @@ app.get('/emails', (req, res) => {
     });
 });
 
+app.get('/emails/cadastros/', (req, res) => {
+    if(req.params.nome&& req.params.email&& req.params.senha){
+        console.log('logado com sucesso')
+        res.redirect('/http://forum.tableless.com.br/t/como-redirecionar-para-uma-pagina-com-node-js/1004');
+    }
+});
+
 app.get('/email/:nome', (req, res) => {
     if(!req.params.nome){
         return res.status(400).send({mensagem: "Nome é obrigatório"});
@@ -34,8 +41,8 @@ app.get('/email/:nome', (req, res) => {
 });
 
 app.post('/email/cadastrar', (req, res) => {
-    if(!req.body.nome || !req.body.email){
-        return res.status(400).send({mensagem: "Nome e email são obrigatórios"});
+    if(!req.body.nome || !req.body.email ||!req.body.senha){
+        return res.status(400).send({mensagem: "Nome,email e senha são obrigatórios"});
     }
 
     req.db.collection('cadastros').insert(req.body, erro => {
@@ -50,8 +57,8 @@ app.post('/email/cadastrar', (req, res) => {
 });
 
 app.post('/email/atualizar', (req, res) => {
-    if(!req.body.nome || !req.body.email){
-        return res.status(400).send({mensagem: "Nome e email são obrigatórios"});
+    if(!req.body.nome || !req.body.email || !req.body.senha){
+        return res.status(400).send({mensagem: "Nome, email e senha são obrigatórios"});
     }
 
     req.db.collection('cadastros').updateOne({nome: req.body.nome}, {$set: req.body}, erro => {

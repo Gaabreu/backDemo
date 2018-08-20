@@ -5,10 +5,11 @@ let botao = document.querySelector('button');
 let lista = document.querySelector('ul');
 
 
-function alterarCadastro(cadastro, atualizar=false){
+function login(cadastro, logar=false){
     let endpoint;
-    if(atualizar){
+    if(logar){
         endpoint = 'http://localhost:3000/email/atualizar'
+        
     }
     else{
         endpoint = 'http://localhost:3000/email/cadastrar'
@@ -24,29 +25,18 @@ function alterarCadastro(cadastro, atualizar=false){
     });
 }
 
-botao.addEventListener('click', () => {
-    let cadastro = {
-        nome: campoNome.value,
-        email: campoEmail.value,
-        senha: campoSenha.value
+fetch(`http://localhost:3000/email/${cadastro.nome}`).then(resposta => {
+return resposta.json();
+}).then(dados => {
+    if(dados.nome&&dados.email&&dados.senha){
+        login(cadastro, true);
+        
     }
-    
-    campoNome.value = '';
-    campoEmail.value = '';
-    campoSenha.value = '';
-    
-    fetch(`http://localhost:3000/email/${cadastro.nome}`).then(resposta => {
-        return resposta.json();
-    }).then(dados => {
-        if(dados.nome){
-            alterarCadastro(cadastro, true);
-        }
-        else{
-            alterarCadastro(cadastro);
-        }
-    });
-
+    else{
+        alert("Usuario não existe");
+    }
 });
+
 
 function carregar(){
     fetch('http://localhost:3000/emails').then(resposta => {
